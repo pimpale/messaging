@@ -1,6 +1,6 @@
 "use strict"
 
-function addMessage(userName, timestamp, message)
+function appendFeed(userName, timestamp, message)
 {
   var table = document.getElementById("message-feed");
   if(table.rows.length < 1) {
@@ -26,17 +26,18 @@ function clearFeed()
 
 //gets new data from server and inserts it at the beginning
 function updateFeed() {
-  request(thisUrl()+'/encounter/?count=100', 
+  request(thisUrl()+'/api/get-message-by-date/?min=0&max=' + Date.now(), 
+    'GET',
     function(xhr){
-      var encounters = JSON.parse(xhr.responseText);
+      var messages = JSON.parse(xhr.responseText);
       clearFeed();
       //go backwards to maintain order
-      for(var i = encounters.length-1; i >= 0; i--) {
-        addSignInOutFeedEntry(encounters[i].type == 'in', 
-          encounters[i].user.name, 
-          encounters[i].user.id, 
-          encounters[i].location.name, 
-          encounters[i].time);
+      for(var i = 0; i < messages.length; i++) {
+        appendFeed(
+          messages[i].username,
+          messages[i].date,
+          messages[i].message
+        );
       }
     },
     function(xhr) 
@@ -47,32 +48,25 @@ function updateFeed() {
 }
 
 //actually sends http request to server
-function newEncounter(userId, locationId, type) {
-  var url = thisUrl()+'/encounter/new/?userId='+userId+'&locationId='+locationId+'&type='+type;
+function sendMessage(username, message) {
+  var url = thisUrl()+'/api/new-message/?username='+encodeURI(username)+'&message='+encodeURI(message);
   console.log('making request to: ' + url);
-  request(url,
+  request(url, 'GET',
     function(xhr){}, 
     function(xhr){});
 }
 
-
-//submits encounter to server and then refreshes the screen
-function sendEncounter(id) {
-  var checkBox = document.getElementById('sign-in-or-out-checkbox');
-  newEncounter(id, 1, checkBox.checked ? 'out' : 'in');
-  setTimeout(function() {
-    updateFeed();
-  }, 50);
-}
-
-function submitEncounter() {
+function attemptMessageSubmit() {
   var userNameTextBox = document.getElementById('user-name-textbox');
   var messageTextBox = document.getElementById('message-textbox');
-  addMessage(userNameTextBox.value, new Date(), messageTextBox.value);
-  messageTextBox.value = '';
-  //sendEncounter(textBox.value);
+  var username = userNameTextBox.value;
+  var message = messageTextBox.value;
+    if(isValidString(username) && isValidString(message)) {
+    sendMessage(username, message);
+    setTimeout(updateFeed, 250);
+    messageTextBox.value = '';
+  }
 }
-
 
 function grayOutOrangeButton(element) {
   element.classList().remove("deep-orange");
@@ -86,5 +80,9 @@ function orangeGrayButton(element) {
 
 $(document).ready(function() {
   console.log('loaded');
-  addMessage('welcome-agent', new Date(), 'Welcome to this messaging server. Stay dank');
+  sendMessage('welcome-agent', 'Welcome to this messaging server. Stay dank');
+  updateFeed();
 });
+
+
+setInterval(updateFeed, 1000);

@@ -25,7 +25,6 @@ app.use(bodyParser.json());
 
 var idCounter = 0;
 
-
 app.get('/api/new-message/', function(req, res) {
   let username = req.query.username;
   let message = req.query.message;
@@ -33,7 +32,7 @@ app.get('/api/new-message/', function(req, res) {
   if(typeof username !== 'undefined' && typeof message !== 'undefined') {
     let msg = {
       id: idCounter,
-      date: new Date(),
+      date: Date.now(),
       username: username,
       message: message,
     };
@@ -45,10 +44,17 @@ app.get('/api/new-message/', function(req, res) {
 });
 
 app.get('/api/retrieve-message-by-id/', function(req, res) {
-  let id = req.query.id;
-  res.end(msglist.filter(msg => msg.id === id));
+  let id = parseInt(req.query.id, 10);
+  res.send(msglist.filter(msg => msg.id === id));
+  res.end();
 });
 
+app.get('/api/get-message-by-date/', function(req, res) {
+  let mindate = new Date(parseInt(req.query.min, 10));
+  let maxdate = new Date(parseInt(req.query.max, 10));
+  res.send(msglist.filter(msg => msg.date >= mindate && msg.date <= maxdate));
+  res.end();
+});
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 

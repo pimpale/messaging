@@ -73,9 +73,9 @@ function getDateString(d) {
 }
 
 
-function request(url, functionOnLoad, functionOnError) {
+function request(url, method, functionOnLoad, functionOnError) {
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', url, true);
+  xhr.open(method, url, true);
   xhr.onload = function() {
     if (xhr.readyState == 4 && xhr.status == 200) {
       functionOnLoad(xhr);
