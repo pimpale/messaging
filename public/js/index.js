@@ -2,7 +2,7 @@
 
 var dateLastUpdate = 0;
 
-function appendFeed(userName, timestamp, message)
+function appendFeed(userName, message)
 {
   var table = document.getElementById("message-feed");
   if(table.rows.length < 1) {
@@ -29,10 +29,10 @@ function updateFeed() {
   $.ajax({
     url: thisUrl()+'/api/get-message-by-date/?min='+dateLastUpdate+'&max=' + Date.now(),
     type: 'GET',
-    success: result => result.forEach(msg => appendFeed(msg.username, msg.date, msg.message)),
+    success: result => result.forEach(msg => appendFeed(msg.username, msg.message)),
     error: error => console.log(error),
   });
-  dateLastUpdate = Date.now() - 1000;
+  dateLastUpdate = Date.now();
 }
 
 //actually sends http request to server
