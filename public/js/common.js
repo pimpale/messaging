@@ -72,20 +72,6 @@ function getDateString(d) {
   return date.toLocaleTimeString('en-US') + " on " + date.toDateString();
 }
 
-
-function request(url, method, functionOnLoad, functionOnError) {
-  var xhr = new XMLHttpRequest();
-  xhr.open(method, url, true);
-  xhr.onload = function() {
-    if (xhr.readyState == 4 && xhr.status == 200) {
-      functionOnLoad(xhr);
-    } else if(xhr.readyStat == 4 && xhr.status != 200) {
-      functionOnError(xhr);
-    }
-  };
-  xhr.send();
-}
-
 //Toggle between showing and hiding the sidebar, and add overlay effect
 function w3_open() {
 

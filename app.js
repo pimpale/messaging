@@ -36,7 +36,6 @@ app.get('/api/new-message/', function(req, res) {
       username: username,
       message: message,
     };
-    console.log(msg);
     msglist.push(msg);
     idCounter++;
   }
