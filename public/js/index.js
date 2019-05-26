@@ -1,22 +1,27 @@
 "use strict"
 
 var dateLastUpdate = 0;
+var feedList = [];
 
-function appendFeed(userName, message)
+function appendFeed(username, message, id)
 {
   var table = document.getElementById("message-feed");
   if(table.rows.length < 1) {
     clearFeed();
   }
-  table.insertRow(1).innerHTML=
-    ('<tr>' + 
-    '<td>' + userName + '</td>' +
-    '<td>' + message + '</td>' +
-    '</tr>');
+  if(!feedList.includes(id)) {
+    table.insertRow(1).innerHTML=
+      ('<tr>' + 
+      '<td>' + username+ '</td>' +
+      '<td>' + message + '</td>' +
+      '</tr>');
+    feedList.push(id);
+  }
 }
 
 function clearFeed()
 {
+  feedList = [];
   document.getElementById('message-feed').innerHTML = 
             '<tr class="dark-gray">' +
               '<td>Name</td>' +
@@ -27,10 +32,13 @@ function clearFeed()
 //gets new data from server and inserts it at the beginning
 function updateFeed() {
   $.ajax({
-    url: thisUrl()+'/api/get-message-by-date/?min='+dateLastUpdate+'&max=' + Date.now(),
+    url: thisUrl()+'/api/get-message/',
     type: 'GET',
-    success: result => result.forEach(msg => appendFeed(msg.username, msg.message)),
-    error: error => console.log(error),
+    success: result => {
+      console.log(result);
+      result.forEach(msg => appendFeed(msg.username, msg.message, msg.id));
+    },
+    error: error => console.log('request failed'),
   });
   dateLastUpdate = Date.now();
 }
@@ -66,6 +74,10 @@ function grayOutOrangeButton(element) {
 function orangeGrayButton(element) {
   element.classList().remove("gray");
   element.classList().add("deep-orange");
+}
+
+function setDate(tstamp) {
+  dateLastUpdate = tstamp;
 }
 
 $(document).ready(function() {

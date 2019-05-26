@@ -42,16 +42,13 @@ app.get('/api/new-message/', function(req, res) {
   res.end()
 });
 
-app.get('/api/retrieve-message-by-id/', function(req, res) {
-  let id = parseInt(req.query.id, 10);
-  res.send(msglist.filter(msg => msg.id === id));
-  res.end();
-});
-
-app.get('/api/get-message-by-date/', function(req, res) {
-  let mindate = new Date(parseInt(req.query.min, 10));
-  let maxdate = new Date(parseInt(req.query.max, 10));
+app.get('/api/get-message/', function(req, res) {
+  // get dates in milliseconds
+  let mindate = typeof req.query.min === 'undefined' ? new Date(0) : new Date(parseInt(req.query.min, 10));
+  let maxdate = typeof req.query.max === 'undefined' ? new Date() : new Date(parseInt(req.query.max, 10));
+  // filter by dates
   res.send(msglist.filter(msg => msg.date >= mindate && msg.date <= maxdate));
+
   res.end();
 });
 
