@@ -4,17 +4,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();
-const port = 80;
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'root',
-  database: 'messaging'
-});
+const port = 8080;
 
 let msglist = [];
-
-//connection.connect();
 
 // serve static files
 app.use(express.static('public'));
@@ -53,5 +45,3 @@ app.get('/api/get-message/', function(req, res) {
 });
 
 app.listen(port, () => console.log(`App listening on port ${port}!`));
-
-// connection.end();
