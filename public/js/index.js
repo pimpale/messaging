@@ -86,4 +86,15 @@ $(document).ready(function() {
 });
 
 
-setInterval(updateFeed, 1000);
+
+$(document).ready(function () {
+  var tbox = document.getElementById('message-textbox');
+  tbox.addEventListener('keydown', function (event) {
+    if (event.keyCode === 13) {
+      attemptMessageSubmit();
+    }
+  });
+
+  setInterval(updateFeed, 1000);
+});
+
