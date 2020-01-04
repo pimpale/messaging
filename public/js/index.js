@@ -11,7 +11,7 @@ function appendFeed(username, message, id)
   }
   if(!feedList.includes(id)) {
     table.insertRow(1).innerHTML=
-      ('<tr>' + 
+      ('<tr>' +
       '<td>' + username+ '</td>' +
       '<td>' + message + '</td>' +
       '</tr>');
@@ -22,7 +22,7 @@ function appendFeed(username, message, id)
 function clearFeed()
 {
   feedList = [];
-  document.getElementById('message-feed').innerHTML = 
+  document.getElementById('message-feed').innerHTML =
             '<tr class="dark-gray">' +
               '<td>Name</td>' +
               '<td>Message</td>' +
@@ -32,7 +32,7 @@ function clearFeed()
 //gets new data from server and inserts it at the beginning
 function updateFeed() {
   $.ajax({
-    url: thisUrl()+'/api/get-message/',
+    url: thisUrl()+'/api/get-message/?min='+dateLastUpdate,
     type: 'GET',
     success: result => {
       console.log(result);
